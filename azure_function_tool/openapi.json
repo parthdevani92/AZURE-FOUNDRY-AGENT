@@ -1,0 +1,111 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Agent Tools",
+    "description": "Calculator and static user-lookup tools for the Foundry agent.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    { "url": "https://parth-agent-function.icywater-7648d831.eastus.azurecontainerapps.io/api" }
+  ],
+  "paths": {
+    "/calculate": {
+      "post": {
+        "summary": "Evaluate a basic arithmetic expression.",
+        "operationId": "calculate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "expression": { "type": "string", "description": "e.g. '12 * (3 + 4)'" }
+                },
+                "required": ["expression"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calculation result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "result": { "type": "string" } }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/queryUsers": {
+      "post": {
+        "summary": "Search the static user list by age, weight, height and/or exact phone number. All fields are optional and combine together.",
+        "operationId": "queryUsers",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "min_age": { "type": "integer", "description": "Only users at least this age (inclusive)." },
+                  "max_age": { "type": "integer", "description": "Only users at most this age (inclusive)." },
+                  "min_weight_kg": { "type": "number", "description": "Only users weighing at least this many kg." },
+                  "max_weight_kg": { "type": "number", "description": "Only users weighing at most this many kg." },
+                  "min_height_cm": { "type": "number", "description": "Only users at least this tall (cm)." },
+                  "max_height_cm": { "type": "number", "description": "Only users at most this tall (cm)." },
+                  "phone": { "type": "string", "description": "Exact phone number to look up." }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Matching users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "phone": { "type": "string" },
+                          "dob": { "type": "string" },
+                          "height_cm": { "type": "number" },
+                          "weight_kg": { "type": "number" },
+                          "age": { "type": "integer" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "toolApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    }
+  },
+  "security": [
+    { "toolApiKey": [] }
+  ]
+}

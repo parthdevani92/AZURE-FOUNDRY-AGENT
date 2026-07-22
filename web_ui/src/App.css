@@ -24,6 +24,16 @@ h1 {
   margin-bottom: 16px;
 }
 
+.agent-select {
+  background: #1a1a1f;
+  color: #eee;
+  border: 1px solid #ffffff2a;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-family: inherit;
+  margin-bottom: 16px;
+}
+
 .messages {
   flex: 1;
   overflow-y: auto;

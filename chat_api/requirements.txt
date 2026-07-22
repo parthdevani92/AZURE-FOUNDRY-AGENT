@@ -2,3 +2,8 @@ fastapi
 uvicorn[standard]
 azure-ai-projects>=2.1.0
 azure-identity
+azure-search-documents>=11.5.1
+openai
+pypdf
+python-multipart
+python-dotenv

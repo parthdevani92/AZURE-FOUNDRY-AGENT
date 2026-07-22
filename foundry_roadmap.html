@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Microsoft Foundry Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B121B;
+    --bg-hero:#0E1826;
+    --surface:#141F2C;
+    --surface-2:#182534;
+    --border:#22324A;
+    --text:#EAF0F7;
+    --text-dim:#94A7BD;
+    --text-faint:#5D7089;
+    --amber:#FF8A3D;
+    --amber-soft:#FFB870;
+    --amber-glow:rgba(255,138,61,.32);
+    --azure:#5AA3FF;
+    --azure-soft:rgba(90,163,255,.14);
+    --teal:#3ECF9B;
+    --teal-soft:rgba(62,207,155,.14);
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(255,138,61,.09), transparent 55%),
+      radial-gradient(900px 500px at 100% 10%, rgba(90,163,255,.08), transparent 50%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter',system-ui,sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Space Grotesk',system-ui,sans-serif;}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px;}
+  a{color:var(--amber-soft);}
+
+  /* ---------- progress bar ---------- */
+  .progress-shell{
+    position:sticky; top:0; z-index:50;
+    background:rgba(11,18,27,.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .progress-inner{
+    max-width:760px;margin:0 auto;padding:12px 20px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .progress-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px; color:var(--text-dim); white-space:nowrap;
+  }
+  .progress-track{
+    flex:1; height:6px; border-radius:99px;
+    background:var(--surface-2); overflow:hidden;
+    border:1px solid var(--border);
+  }
+  .progress-fill{
+    height:100%; width:0%;
+    background:linear-gradient(90deg,var(--amber),var(--amber-soft));
+    box-shadow:0 0 12px var(--amber-glow);
+    transition:width .5s ease;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{padding:52px 0 8px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--amber-soft); margin:0 0 14px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;
+    background:var(--amber); box-shadow:0 0 10px 2px var(--amber-glow);}
+  .hero h1{font-size:clamp(28px,5vw,40px); line-height:1.15; margin:0 0 14px; font-weight:700;}
+  .hero p.lead{color:var(--text-dim); font-size:16px; max-width:56ch; margin:0 0 6px;}
+  .hero .meta{font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--text-faint); margin-top:14px;}
+
+  /* rename callout */
+  .plaque{
+    margin:24px 0 30px;
+    border:1px solid var(--border);
+    border-left:3px solid var(--azure);
+    background:var(--surface);
+    border-radius:10px;
+    padding:14px 16px;
+    font-size:14.5px;
+    color:var(--text-dim);
+  }
+  .plaque b{color:var(--text);}
+
+  /* known-skills strip */
+  .bring{
+    margin:0 0 44px; padding:18px 18px 20px;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+  }
+  .bring h3{margin:0 0 4px; font-size:15px; color:var(--text);}
+  .bring p{margin:0 0 12px; font-size:13.5px; color:var(--text-dim);}
+  .chips{display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{
+    font-family:'IBM Plex Mono',monospace; font-size:12px;
+    padding:6px 11px; border-radius:99px;
+    background:var(--azure-soft); color:var(--azure);
+    border:1px solid rgba(90,163,255,.3);
+  }
+  .chip.known{background:var(--teal-soft); color:var(--teal); border-color:rgba(62,207,155,.3);}
+
+  /* ---------- timeline ---------- */
+  .timeline{position:relative; margin-top:10px;}
+  .timeline::before{
+    content:"";
+    position:absolute; left:23px; top:6px; bottom:6px; width:2px;
+    background:linear-gradient(180deg, var(--amber) 0%, var(--azure) 60%, transparent 100%);
+    opacity:.55;
+  }
+  .stage{
+    position:relative;
+    padding-left:64px;
+    margin-bottom:34px;
+    opacity:0; transform:translateY(14px);
+    transition:opacity .5s ease, transform .5s ease;
+  }
+  .stage.show{opacity:1; transform:translateY(0);}
+  .stage.optional{opacity:.92;}
+  .badge{
+    position:absolute; left:0; top:0;
+    width:48px; height:48px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:17px;
+    background:radial-gradient(circle at 32% 28%, var(--surface-2), var(--surface));
+    border:1px solid var(--border);
+    color:var(--amber-soft);
+    box-shadow:0 0 0 4px var(--bg), 0 0 16px -2px var(--amber-glow);
+    z-index:2;
+  }
+  .stage.done .badge{
+    background:linear-gradient(140deg,var(--amber),#c9631e);
+    color:#1a1006; border-color:transparent;
+  }
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:18px 20px 20px;
+  }
+  .card-top{display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:6px;}
+  .card h3{margin:0; font-size:18px; color:var(--text);}
+  .time-tag{
+    flex-shrink:0; font-family:'IBM Plex Mono',monospace; font-size:11.5px;
+    color:var(--text-faint); border:1px solid var(--border); border-radius:99px;
+    padding:4px 10px; white-space:nowrap; margin-top:2px;
+  }
+  .card p.lead-line{color:var(--text-dim); font-size:14.5px; margin:6px 0 14px;}
+  .card ul{margin:0 0 14px; padding-left:18px;}
+  .card li{font-size:14px; color:var(--text); margin-bottom:6px;}
+  .card li b{color:var(--amber-soft); font-weight:600;}
+  .subnote{
+    font-size:13px; color:var(--text-faint); background:var(--surface-2);
+    border:1px dashed var(--border); border-radius:8px; padding:9px 12px; margin:0 0 12px;
+  }
+  .action{
+    font-size:13.5px; color:var(--text-dim); display:flex; gap:8px; align-items:flex-start;
+    margin-top:12px; padding-top:12px; border-top:1px solid var(--border);
+  }
+  .action b{color:var(--teal); font-family:'IBM Plex Mono',monospace; font-size:11.5px; text-transform:uppercase; flex-shrink:0;}
+  .conn-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px;}
+
+  .check-row{
+    display:flex; align-items:center; gap:8px; margin-top:14px;
+    font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--text-faint);
+    cursor:pointer; user-select:none; width:fit-content;
+  }
+  .check-row input{
+    appearance:none; width:16px; height:16px; border-radius:4px;
+    border:1px solid var(--border); background:var(--surface-2);
+    display:grid; place-content:center; cursor:pointer; flex-shrink:0;
+  }
+  .check-row input::before{
+    content:""; width:9px; height:9px; border-radius:2px; transform:scale(0);
+    transition:transform .15s ease; background:var(--amber);
+  }
+  .check-row input:checked::before{transform:scale(1);}
+  .check-row input:checked{border-color:var(--amber);}
+  .check-row span.done-text{display:none;}
+  .check-row.checked span.todo-text{display:none;}
+  .check-row.checked span.done-text{display:inline;}
+
+  /* certification + project blocks */
+  .block{
+    margin:44px 0; padding:22px 22px 24px;
+    border-radius:var(--radius); border:1px solid var(--border);
+  }
+  .block.cert{background:linear-gradient(160deg, rgba(90,163,255,.08), var(--surface));}
+  .block.project{background:linear-gradient(160deg, rgba(255,138,61,.09), var(--surface));}
+  .block h2{margin:0 0 6px; font-size:19px;}
+  .block p{color:var(--text-dim); font-size:14.5px; margin:0 0 14px;}
+  .block ul{margin:0; padding-left:18px;}
+  .block li{font-size:14px; margin-bottom:8px;}
+  .block li b{color:var(--text);}
+  .block a.cta{
+    display:inline-block; margin-top:14px; font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px; text-decoration:none; color:var(--bg); background:var(--amber-soft);
+    padding:9px 16px; border-radius:8px; font-weight:600;
+  }
+  .block.cert a.cta{background:var(--azure); color:#04101f;}
+
+  /* footer resources */
+  .footer{margin-top:52px;}
+  .footer h3{font-size:14px; color:var(--text-dim); font-weight:600; margin-bottom:12px;
+    font-family:'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:.05em;}
+  .reslist{display:flex; flex-direction:column; gap:8px;}
+  .reslist a{
+    display:flex; justify-content:space-between; gap:10px;
+    background:var(--surface); border:1px solid var(--border); border-radius:9px;
+    padding:11px 14px; text-decoration:none; font-size:13.5px; color:var(--text);
+  }
+  .reslist a span.url{color:var(--text-faint); font-family:'IBM Plex Mono',monospace; font-size:11.5px;}
+  .foot-note{color:var(--text-faint); font-size:12.5px; margin-top:28px; text-align:center;}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    .stage{transition:none; opacity:1; transform:none;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="progress-shell">
+    <div class="progress-inner">
+      <span class="progress-label" id="progressLabel">0 / 8 stages done</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="hero">
+      <p class="eyebrow">Learning roadmap</p>
+      <h1>Your Step-by-Step Path Into Microsoft Foundry</h1>
+      <p class="lead">You already know Container Apps, Virtual Machines, Static Web Apps, and Key Vault. This roadmap builds Foundry on top of that — in order, one stage at a time.</p>
+      <p class="meta">8 STAGES · ~6-8 WEEKS AT A STEADY PACE · GO AT YOUR OWN SPEED</p>
+    </div>
+
+    <div class="plaque">
+      <b>Name change to know first:</b> Since 1 January 2026, "Azure AI Foundry" is officially called <b>Microsoft Foundry</b>. It is the exact same product, nothing changed except the name — but tutorials, videos, and old docs may still say "Azure AI Foundry." Treat the two names as the same thing.
+    </div>
+
+    <div class="bring">
+      <h3>What you already bring to this</h3>
+      <p>Foundry does not replace these — it plugs straight into them.</p>
+      <div class="chips">
+        <span class="chip known">Container Apps</span>
+        <span class="chip known">Virtual Machines</span>
+        <span class="chip known">Static Web Apps</span>
+        <span class="chip known">Key Vault</span>
+      </div>
+    </div>
+
+    <div class="timeline" id="timeline">
+
+      <!-- Stage 1 -->
+      <div class="stage" data-stage="1">
+        <div class="badge">1</div>
+        <div class="card">
+          <div class="card-top"><h3>See the big picture</h3><span class="time-tag">2-3 days</span></div>
+          <p class="lead-line">Microsoft Foundry is one website where you build, test, and launch AI apps and AI agents. Nothing to install yet — just explore.</p>
+          <ul>
+            <li><b>Project</b> — a folder that holds your models, agents, and settings.</li>
+            <li><b>Foundry resource</b> — the actual Azure resource behind your project (same idea as the Azure resource behind a Container App).</li>
+            <li><b>Portal layout</b> — Discover page (browse), Build page (create), Operate page (monitor).</li>
+          </ul>
+          <div class="action"><b>Do</b><span>Go to ai.azure.com, sign in with your Azure account, and create one free project.</span></div>
+          <label class="check-row"><input type="checkbox"><span class="todo-text">Mark stage done</span><span class="done-text">Stage done ✓</span></label>
+        </div>
+      </div>
+
+      <!-- Stage 2 -->
+      <div class="stage" data-stage="2">
+        <div class="badge">2</div>
+        <div class="card">
+          <div class="card-top"><h3>Explore the model catalog</h3><span class="time-tag">2-3 days</span></div>
+          <p class="lead-line">Foundry gives you access to 11,000+ AI models — from OpenAI, Microsoft, Meta, DeepSeek, and others — in one searchable catalog.</p>
+          <ul>
+            <li>How to pick and <b>deploy</b> a model (make it ready to use).</li>
+            <li>The <b>Playground</b> — a no-code chat screen to test any model instantly.</li>
+            <li>Basic <b>prompt writing</b> — asking clearly so you get a useful answer.</li>
+          </ul>
+          <div class="subnote">Side note: Claude — the AI you're talking to right now — is also available inside Microsoft Foundry's model catalog.</div>
+          <div class="action"><b>Do</b><span>Deploy a small model (e.g. gpt-5-mini) and chat with it in the Playground.</span></div>
+          <label class="check-row"><input type="checkbox"><span class="todo-text">Mark stage done</span><span class="done-text">Stage done ✓</span></label>
+        </div>
+      </div>
+
+      <!-- Stage 3 -->
+      <div class="stage" data-stage="3">
+        <div class="badge">3</div>
+        <div class="card">
+          <div class="card-top"><h3>Call a model from your code</h3><span class="time-tag">~1 week</span></div>
+          <p class="lead-line">This is where Foundry starts feeling like real development. You send a prompt from actual code and get an answer back.</p>
+          <ul>
+            <li>Install the <b>SDK</b> for Python, C#, or JavaScript — pick the language you know.</li>
+            <li>Sign in from the terminal with <b>az login</b>.</li>
+            <li>Copy your <b>project endpoint</b> (web address) and API key from the portal.</li>
+          </ul>
+          <div class="conn-row"><span class="chip">🔗 uses what you know: Key Vault</span></div>
+          <div class="action"><b>Do</b><span>Write a short script that sends one prompt and prints the answer. Store the key in Key Vault, not in the code.</span></div>
+          <label class="check-row"><input type="checkbox"><span class="todo-text">Mark stage done</span><span class="done-text">Stage done ✓</span></label>
+        </div>
+      </div>
+
+      <!-- Stage 4 -->
+      <div class="stage" data-stage="4">
+        <div class="badge">4</div>
+        <div class="card">
+          <div class="card-top"><h3>Build your first agent</h3><span class="time-tag">~1 week</span></div>
+          <p class="lead-line">An agent is an AI that follows instructions and can use tools — not just answer once and forget. Foundry gives you two ways to build one.</p>
+          <ul>
+            <li><b>Prompt agent</b> — no code. Write instructions, pick a model, done in the portal.</li>
+            <li><b>Hosted agent</b> — full code. You bring your own code; Foundry runs it inside a container.</li>
+          </ul>
+          <div class="conn-row"><span class="chip">🔗 uses what you know: Container Apps</span></div>
+          <div class="action"><b>Do</b><span>Start with a prompt agent. Give it one small job, like "answer questions about our return policy."</span></div>
+          <label class="check-row"><input type="checkbox"><span class="todo-text">Mark stage done</span><span class="done-text">Stage done ✓</span></label>
+        </div>
+      </div>
+
+      <!-- Stage 5 -->
+      <div class="stage" data-stage="5">
+        <div class="badge">5</div>
+        <div class="card">
+          <div class="card-top"><h3>Add tools, your own data, and memory</h3><span class="time-tag">1-2 weeks</span></div>
+          <p class="lead-line">A plain model does not know your company's data, and forgets everything after each chat. This stage fixes both problems.</p>
+          <ul>
+            <li><b>Tools</b> — connect your agent to 1,400+ outside systems using <b>MCP</b> (Model Context Protocol), an open standard for plugging in tools.</li>
+            <li><b>Grounding</b> — use <b>Foundry IQ</b> or Azure AI Search so the agent answers from your own documents, with sources shown.</li>
+            <li><b>Memory</b> — let the agent remember facts across chats instead of starting fresh every time.</li>
+          </ul>
+          <div class="action"><b>Do</b><span>Upload one document and ask your agent a question only that document can answer.</span></div>
+          <label class="check-row"><input type="checkbox"><span class="todo-text">Mark stage done</span><span class="done-text">Stage done ✓</span></label>
+        </div>
+      </div>
+
+      <!-- Stage 6 -->
+      <div class="stage optional" data-stage="6">
+        <div class="badge">6</div>
+        <div class="card">
+          <div class="card-top"><h3>Multiple agents working together</h3><span class="time-tag">3-4 days · optional</span></div>
+          <p class="lead-line">For bigger tasks, split the work across a few small agents instead of one big one.</p>
+          <ul>
+            <li><b>Microsoft Agent Framework</b> — an open-source toolkit for building and connecting agents.</li>
+            <li><b>A2A (Agent-to-Agent)</b> — a standard way for one agent to call another agent.</li>
+          </ul>
+          <div class="subnote">Skip this for now if Stages 4 and 5 don't feel comfortable yet — come back to it later.</div>
+          <label class="check-row"><input type="checkbox"><span class="todo-text">Mark stage done</span><span class="done-text">Stage done ✓</span></label>
+        </div>
+      </div>
+
+      <!-- Stage 7 -->
+      <div class="stage" data-stage="7">
+        <div class="badge">7</div>
+        <div class="card">
+          <div class="card-top"><h3>Deploy for real use</h3><span class="time-tag">ongoing, start ~1 week</span></div>
+          <p class="lead-line">Now your existing Azure skills matter the most.</p>
+          <ul>
+            <li>Host the agent's backend as a <b>hosted agent</b> (container-based) or your own Container App.</li>
+            <li>Build the chat screen (frontend) using <b>Static Web Apps</b>.</li>
+            <li>Keep every secret in <b>Key Vault</b>, connected through <b>managed identity</b> (a safer way to connect without passwords).</li>
+            <li>Optional: publish the agent straight into Microsoft Teams.</li>
+          </ul>
+          <div class="conn-row">
+            <span class="chip">🔗 Container Apps</span>
+            <span class="chip">🔗 Static Web Apps</span>
+            <span class="chip">🔗 Key Vault</span>
+          </div>
+          <label class="check-row"><input type="checkbox"><span class="todo-text">Mark stage done</span><span class="done-text">Stage done ✓</span></label>
+        </div>
+      </div>
+
+      <!-- Stage 8 -->
+      <div class="stage" data-stage="8">
+        <div class="badge">8</div>
+        <div class="card">
+          <div class="card-top"><h3>Secure, watch, and control cost</h3><span class="time-tag">ongoing</span></div>
+          <p class="lead-line">Add these safety layers before real users touch your agent.</p>
+          <ul>
+            <li><b>RBAC</b> (role-based access control) — decide who can do what.</li>
+            <li><b>Tracing and evaluation</b> — check if your agent gives good, safe answers.</li>
+            <li><b>Pricing</b> — Foundry itself is free to explore; you only pay for the models and services you actually use.</li>
+          </ul>
+          <div class="action"><b>Do</b><span>Turn on tracing for your agent and read one full trace end-to-end.</span></div>
+          <label class="check-row"><input type="checkbox"><span class="todo-text">Mark stage done</span><span class="done-text">Stage done ✓</span></label>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="block project">
+      <h2>🔨 A first project that touches everything above</h2>
+      <p>Small enough for a weekend, and it uses your whole stack:</p>
+      <ul>
+        <li><b>Frontend:</b> a simple chat page on Static Web Apps</li>
+        <li><b>Backend/agent:</b> a Foundry hosted agent, or your own Container App calling the Foundry SDK</li>
+        <li><b>Secrets:</b> Key Vault + managed identity</li>
+        <li><b>Data:</b> one PDF or FAQ document grounded through Foundry IQ</li>
+      </ul>
+    </div>
+
+    <div class="block cert">
+      <h2>🎓 Want it certified? (optional)</h2>
+      <p>If you want proof of this skill on your resume:</p>
+      <ul>
+        <li><b>AI-102</b> (the old exam) officially retired on 30 June 2026.</li>
+        <li><b>AI-103 — "Developing AI Apps and Agents on Azure"</b> is its replacement, built entirely around Microsoft Foundry, agents, and grounding your AI in your own data. Check the official page for its current exam status before booking.</li>
+        <li>Not ready for that yet? <b>AI-900 / AI-901 (Azure AI Fundamentals)</b> is a lighter, beginner-level exam.</li>
+      </ul>
+      <a class="cta" href="https://learn.microsoft.com/en-us/credentials/certifications/azure-ai-apps-and-agents-developer-associate/" target="_blank" rel="noopener">View the AI-103 certification page →</a>
+    </div>
+
+    <div class="footer">
+      <h3>Official starting points</h3>
+      <div class="reslist">
+        <a href="https://ai.azure.com" target="_blank" rel="noopener"><span>Microsoft Foundry portal</span><span class="url">ai.azure.com</span></a>
+        <a href="https://learn.microsoft.com/en-us/azure/foundry/what-is-foundry" target="_blank" rel="noopener"><span>What is Microsoft Foundry — overview</span><span class="url">learn.microsoft.com</span></a>
+        <a href="https://learn.microsoft.com/en-us/azure/foundry/quickstarts/get-started-code" target="_blank" rel="noopener"><span>Quickstart — call a model from code</span><span class="url">learn.microsoft.com</span></a>
+        <a href="https://learn.microsoft.com/en-us/azure/foundry/concepts/choose-build-approach" target="_blank" rel="noopener"><span>Prompt agent vs hosted agent — how to choose</span><span class="url">learn.microsoft.com</span></a>
+        <a href="https://learn.microsoft.com/en-us/training/azure/ai-foundry" target="_blank" rel="noopener"><span>Free Microsoft Learn training modules</span><span class="url">learn.microsoft.com</span></a>
+      </div>
+      <p class="foot-note">Researched from Microsoft's official docs and Build 2026 announcements · July 2026</p>
+    </div>
+
+  </div>
+
+<script>
+  const stages = Array.from(document.querySelectorAll('.stage'));
+  const total = stages.length;
+  const fill = document.getElementById('progressFill');
+  const label = document.getElementById('progressLabel');
+
+  function updateProgress(){
+    const done = stages.filter(s => s.classList.contains('done')).length;
+    fill.style.width = (done/total*100) + '%';
+    label.textContent = done + ' / ' + total + ' stages done';
+  }
+
+  stages.forEach(stage => {
+    const box = stage.querySelector('.check-row input');
+    const row = stage.querySelector('.check-row');
+    box.addEventListener('change', () => {
+      stage.classList.toggle('done', box.checked);
+      row.classList.toggle('checked', box.checked);
+      updateProgress();
+    });
+  });
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if('IntersectionObserver' in window && !reduceMotion){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); }
+      });
+    }, {threshold:0.12});
+    stages.forEach(s=>io.observe(s));
+  } else {
+    stages.forEach(s=>s.classList.add('show'));
+  }
+
+  updateProgress();
+</script>
+
+</body>
+</html>

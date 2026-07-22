@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const CHAT_API_URL = import.meta.env.VITE_CHAT_API_URL;
 
@@ -8,6 +8,24 @@ export default function App() {
   const [responseId, setResponseId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [agents, setAgents] = useState([]);
+  const [selectedAgent, setSelectedAgent] = useState(null);
+
+  useEffect(() => {
+    fetch(`${CHAT_API_URL}/agents`)
+      .then((res) => res.json())
+      .then((data) => {
+        setAgents(data.agents);
+        setSelectedAgent(data.default);
+      })
+      .catch(() => setError("Could not load agent list."));
+  }, []);
+
+  function handleAgentChange(e) {
+    setSelectedAgent(e.target.value);
+    setMessages([]);
+    setResponseId(null);
+  }
 
   async function sendMessage() {
     const text = input.trim();
@@ -22,7 +40,7 @@ export default function App() {
       const res = await fetch(`${CHAT_API_URL}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, response_id: responseId }),
+        body: JSON.stringify({ message: text, response_id: responseId, agent_name: selectedAgent }),
       });
 
       if (!res.ok) {
@@ -48,7 +66,20 @@ export default function App() {
 
   return (
     <div className="chat-container">
-      <h1>kimi-agnet</h1>
+      <h1>Chat</h1>
+
+      <select
+        className="agent-select"
+        value={selectedAgent ?? ""}
+        onChange={handleAgentChange}
+        disabled={loading || agents.length === 0}
+      >
+        {agents.map((agent) => (
+          <option key={agent.name} value={agent.name}>
+            {agent.label}
+          </option>
+        ))}
+      </select>
 
       <div className="messages">
         {messages.map((m, i) => (
